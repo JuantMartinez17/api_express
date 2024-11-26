@@ -21,14 +21,28 @@ const processRequest = (req, res) => {
         case '/pokemon/ditto':
           res.setHeader('Content-Type', 'application/json')
           return res.end(JSON.stringify(dittoJSON))
+        default:
+          res.statusCode = 404
+          res.end('<h1>404 Not Found</h1>')
       }
       break
     case 'POST':
       switch (url) {
         case '/pokemon': {
-          // const body = ''
+          let body = ''
+          req.on('data', (chunk) => {
+            body += chunk.toString()
+          })
+          req.on('end', () => {
+            const data = JSON.parse(body)
+            res.writeHead(201, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify(data))
+          })
           break
         }
+        default:
+          res.statusCode = 404
+          res.end('<h1>404 Not Found</h1>')
       }
   }
 }
